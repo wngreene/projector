@@ -33,6 +33,16 @@ def initialize(args):
     with open(os.path.join(args.path, "README.md"), "w") as readme:
         readme.write(contents)
 
+    # Add a gitignore.
+    with open(os.path.join(args.path, ".gitignore"), "w") as gitignore:
+        ignores = []
+        ignores.append("build\n")
+        ignores.append("install\n")
+        ignores.append("*~\n")
+        ignores.append("*pyc\n")
+
+        gitignore.writelines(ignores)
+
     return
 
 def add_submodule(args):
