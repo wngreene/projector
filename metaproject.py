@@ -10,11 +10,17 @@ Usage:
   >> metaproject add <git url> <dependencies>
 """
 
+import os
+import shutil
 import argparse
 
 def initialize(args):
     """Initialize a metaproject."""
-    print args.path
+
+    root_dir = os.path.dirname(os.path.realpath(__file__))
+    src = os.path.join(root_dir, "template/")
+    shutil.copytree(src, args.path)
+
     return
 
 def add_submodule(args):
