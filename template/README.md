@@ -1,5 +1,5 @@
 # metaproject
-[Add a description of the metaproject here.]
+[Add a description of metaproject here.]
 
 ### Maintainer
 - Luke Skywalker (luke.skywalker@tatooine.com)
