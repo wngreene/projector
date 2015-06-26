@@ -13,6 +13,7 @@ Usage:
 import os
 import shutil
 import argparse
+from git import Repo
 
 def initialize(args):
     """Initialize a metaproject."""
@@ -45,6 +46,16 @@ def initialize(args):
         ignores.append("*pyc\n")
 
         gitignore.writelines(ignores)
+
+    print "Done."
+
+    # Initialize repo.
+    print "Initializing repository ... ",
+    repo = Repo.init(args.path)
+    repo.git.add(all=True)
+    repo.index.commit("Initialize metaproject.")
+
+    print "Done."
 
     return
 
