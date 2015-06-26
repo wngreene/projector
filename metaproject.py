@@ -21,6 +21,18 @@ def initialize(args):
     src = os.path.join(root_dir, "template/")
     shutil.copytree(src, args.path)
 
+    # Rename metaproject in README.md.
+    src_split = os.path.split(args.path)
+    name = src_split[-1]
+    contents = ""
+    with open(os.path.join(args.path, "README.md"), "r") as readme:
+        contents = readme.read()
+
+    contents = contents.replace('metaproject', name)
+
+    with open(os.path.join(args.path, "README.md"), "w") as readme:
+        readme.write(contents)
+
     return
 
 def add_submodule(args):
