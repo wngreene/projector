@@ -3,11 +3,11 @@
 # Copyright 2015 Massachusetts Institute of Tech
 
 """
-A convenience tool for creating metaprojects.
+A convenience tool for creating projects.
 
 Usage:
-  >> metaproject init my_project
-  >> metaproject add <git url> <dependencies>
+  >> projector init my_project
+  >> projector add <git url> <dependencies>
 """
 
 import os
@@ -74,7 +74,7 @@ def initialize(args):
     return
 
 def add_submodule(args):
-    """Add a git submodule to the metaproject."""
+    """Add a git submodule to project."""
 
     working_dir = os.getcwd()
     repo = Repo(working_dir)
@@ -114,14 +114,14 @@ def add_submodule(args):
     return
 
 def main():
-    """Main entry point for metaproject."""
+    """Main entry point for projector."""
 
     # Parse args.
-    parser = argparse.ArgumentParser(description="A convenience tool for creating metaprojects.")
+    parser = argparse.ArgumentParser(description="A convenience tool for creating projectors.")
     subparsers = parser.add_subparsers(help='Sub-command help')
 
     # Parser for init command.
-    init_parser = subparsers.add_parser('init', help='Initialize a metaproject')
+    init_parser = subparsers.add_parser('init', help='Initialize a project')
     init_parser.add_argument('path', help='Path to metaproject.')
     init_parser.set_defaults(func=initialize)
 
