@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright 2015 Massachusetts Institute of Tech
+# Copyright 2015 Massachusetts Institute of Technology.
 
 """
 A convenience tool for creating projects.
