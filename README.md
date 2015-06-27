@@ -19,11 +19,11 @@ where `INSTALL_PATH` must be on your `PYTHONPATH`.
 ### Usage
 ```
 # Initialize a project.
-projector init my_project
+projector.py init my_project
 
 # Initialize a metaproject.
-projector init -m my_meta_project
+projector.py init -m my_meta_project
 
 # Add a submodule to a project.
-projector add <git_url> <path> -d <dependencies>
+projector.py add <git_url> <path> -d <dependencies>
 ```
