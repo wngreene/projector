@@ -55,6 +55,10 @@ def initialize(args):
 
         gitignore.writelines(ignores)
 
+    # Add a gitmodules.
+    with open(join(args.path, ".gitmodules"), "w") as gitmodules:
+        pass
+
     # Initialize repo.
     print GREEN + "Initializing repository:"
     print BLUE + "  git init %s" % args.path
