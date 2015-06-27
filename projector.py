@@ -23,6 +23,20 @@ WARNING = '\033[93m'
 FAIL = '\033[91m'
 ENDC = '\033[0m'
 
+
+def replace_string(fname, old, new):
+    """Replace a string in a file."""
+    contents = ""
+    with open(fname, "r") as fo:
+        contents = fo.read()
+
+        contents = contents.replace(old, new)
+
+    with open(fname, "w") as fo:
+        fo.write(contents)
+
+    return
+
 def initialize(args):
     """Initialize a project."""
 
@@ -35,21 +49,34 @@ def initialize(args):
     src = ""
     if args.meta:
         src = join(root_dir, "templates", "metaproject/")
+        shutil.copytree(src, args.path)
+
+        # Rename metaproject in README.md.
+        src_split = os.path.split(args.path)
+        name = src_split[-1]
+        replace_string(os.path.join(args.path, "README.md"), "metaproject", name)
+
     else:
         src = join(root_dir, "templates", "project/")
-    shutil.copytree(src, args.path)
+        shutil.copytree(src, args.path)
 
-    # Rename metaproject in README.md.
-    src_split = os.path.split(args.path)
-    name = src_split[-1]
-    contents = ""
-    with open(join(args.path, "README.md"), "r") as readme:
-        contents = readme.read()
+        # Replace "project".
+        src_split = os.path.split(args.path)
+        name = src_split[-1]
+        replace_string(os.path.join(args.path, "README.md"), "project", name)
+        replace_string(os.path.join(args.path, "CMakeLists.txt"), "project", name)
+        replace_string(os.path.join(args.path, "cmake/templates/projectConfig.cmake.in"),
+                       "project", name)
+        replace_string(os.path.join(args.path, "CMakeLists.txt"),
+                       "%s(%s)" % (name, name), "project(%s)" % name)
 
-    contents = contents.replace('metaproject', name)
-
-    with open(join(args.path, "README.md"), "w") as readme:
-        readme.write(contents)
+        # Rename some files.
+        os.rename(os.path.join(args.path, "src", "project"),
+                  os.path.join(args.path, "src", name))
+        os.rename(os.path.join(args.path, "cmake", "templates", "projectConfig.cmake.in"),
+                  os.path.join(args.path, "cmake", "templates", "%sConfig.cmake.in" % name))
+        os.rename(os.path.join(args.path, "cmake", "templates", "projectConfigVersion.cmake.in"),
+                  os.path.join(args.path, "cmake", "templates", "%sConfigVersion.cmake.in" % name))
 
     # Add a gitignore.
     with open(join(args.path, ".gitignore"), "w") as gitignore:
@@ -74,7 +101,7 @@ def initialize(args):
 
     repo = Repo.init(args.path)
     repo.git.add(all=True)
-    repo.index.commit("Initialize metaproject.")
+    repo.index.commit("Initialize project.")
 
     return
 
