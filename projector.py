@@ -72,8 +72,8 @@ def initialize(args):
                        "%s(%s)" % (name, name), "project(%s)" % name)
 
         # Rename some files.
-        os.rename(os.path.join(args.path, "src", "project"),
-                  os.path.join(args.path, "src", name))
+        # os.rename(os.path.join(args.path, "src", "project"),
+        #           os.path.join(args.path, "src", name))
         os.rename(os.path.join(args.path, "cmake", "templates", "projectConfig.cmake.in"),
                   os.path.join(args.path, "cmake", "templates", "%sConfig.cmake.in" % name))
         os.rename(os.path.join(args.path, "cmake", "templates", "projectConfigVersion.cmake.in"),
