@@ -48,7 +48,7 @@ def initialize(args):
 
     src = ""
     if args.meta:
-        src = join(root_dir, "templates", "metaproject/")
+        src = join(root_dir, "..", "templates", "metaproject/")
         shutil.copytree(src, args.path)
 
         # Rename metaproject in README.md.
@@ -57,7 +57,7 @@ def initialize(args):
         replace_string(os.path.join(args.path, "README.md"), "metaproject", name)
 
     else:
-        src = join(root_dir, "templates", "project/")
+        src = join(root_dir, "..", "templates", "project/")
         shutil.copytree(src, args.path)
 
         # Replace "project".
