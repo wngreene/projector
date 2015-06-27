@@ -108,21 +108,20 @@ def initialize(args):
 def add_submodule(args):
     """Add a git submodule to project."""
 
-    working_dir = os.getcwd()
-    repo = Repo(working_dir)
-    relpath = os.path.relpath(repo.working_dir, working_dir)
+    repo = Repo(os.getcwd())
+    relpath = args.path #os.path.relpath(repo.working_dir, working_dir)
     sm_name = re.split('[\./]', args.url)[-2]
 
     # Add submodule.
     print GREEN + "Adding submodule:"
-    print BLUE + "  git submodule add %s %s" % (args.url, os.path.join(relpath, sm_name))
+    print BLUE + "  git submodule add %s %s/" % (args.url, relpath)
 
-    submod = repo.create_submodule(sm_name, os.path.join(sm_name),
-                               url=args.url, branch="master")
+    submod = repo.create_submodule(sm_name, os.path.join(repo.working_dir, relpath, sm_name),
+                                   url=args.url, branch="master")
 
     # Make add_submodule call in CMakeLists.
     with open(os.path.join(repo.working_dir, "CMakeLists.txt"), 'a') as cml:
-        cmd = "add_submodule(%s DIRECTORY ./%s" % (sm_name, sm_name)
+        cmd = "\nadd_submodule(%s DIRECTORY %s/%s" % (sm_name, relpath, sm_name)
 
         if args.depends is not None:
             cmd += " DEPENDS"
@@ -161,6 +160,7 @@ def main():
     # Parser for add command.
     add_parser = subparsers.add_parser('add', help='Add a git submodule to a project.')
     add_parser.add_argument('url', help='Git repository url')
+    add_parser.add_argument('path', help='Path to submodule.')
     add_parser.add_argument('-d', '--depends', nargs='*', help='Project dependencies.')
     add_parser.set_defaults(func=add_submodule)
 
