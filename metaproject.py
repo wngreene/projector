@@ -15,12 +15,20 @@ import shutil
 import argparse
 from git import Repo
 
+HEADER = '\033[95m'
+BLUE = '\033[94m'
+GREEN = '\033[92m'
+WARNING = '\033[93m'
+FAIL = '\033[91m'
+ENDC = '\033[0m'
+
 def initialize(args):
     """Initialize a metaproject."""
 
     join = os.path.join
 
-    print "Copying metaproject template to %s ... " % args.path,
+    print GREEN + "Metaproject destination:"
+    print BLUE + "  %s" % args.path
     root_dir = os.path.dirname(os.path.realpath(__file__))
     src = join(root_dir, "template/")
     shutil.copytree(src, args.path)
@@ -47,15 +55,16 @@ def initialize(args):
 
         gitignore.writelines(ignores)
 
-    print "Done."
-
     # Initialize repo.
-    print "Initializing repository ... ",
+    print GREEN + "Initializing repository:"
+    print BLUE + "  git init %s" % args.path
+    print BLUE + "  cd %s" % args.path
+    print BLUE + "  git add ."
+    print BLUE + "  git commit -m \"Initialize metaproject.\""
+
     repo = Repo.init(args.path)
     repo.git.add(all=True)
     repo.index.commit("Initialize metaproject.")
-
-    print "Done."
 
     return
 
