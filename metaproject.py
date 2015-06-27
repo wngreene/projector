@@ -90,7 +90,7 @@ def main():
     add_parser = subparsers.add_parser('add', help='Add a project to the metaproject as a git ' +
                                        'submodule.')
     add_parser.add_argument('url', help='Git repository url')
-    add_parser.add_argument('dependencies', nargs='+', help='Project dependencies.')
+    add_parser.add_argument('-d', '--depends', nargs='*', help='Project dependencies.')
     add_parser.set_defaults(func=add_submodule)
 
     args = parser.parse_args()
