@@ -13,6 +13,7 @@ Usage:
 import os
 import shutil
 import argparse
+import re
 from git import Repo
 
 HEADER = '\033[95m'
@@ -74,8 +75,20 @@ def initialize(args):
 
 def add_submodule(args):
     """Add a git submodule to the metaproject."""
-    print args.url
-    print args.dependencies
+
+    working_dir = os.getcwd()
+    repo = Repo(working_dir)
+    relpath = os.path.relpath(repo.working_dir, working_dir)
+
+    print GREEN + "Adding submodule:"
+    print BLUE + "  git submodule add %s %s" % (args.url, relpath)
+
+    sm_name = re.split('[\./]', args.url)[-2]
+
+    sm = repo.create_submodule(sm_name, os.path.join(relpath, sm_name),
+                               url=args.url, branch="master")
+
+    print args.depends
     return
 
 def main():
