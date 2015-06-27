@@ -24,14 +24,19 @@ FAIL = '\033[91m'
 ENDC = '\033[0m'
 
 def initialize(args):
-    """Initialize a metaproject."""
+    """Initialize a project."""
 
     join = os.path.join
 
-    print GREEN + "Metaproject destination:"
+    print GREEN + "Project destination:"
     print BLUE + "  %s" % args.path
     root_dir = os.path.dirname(os.path.realpath(__file__))
-    src = join(root_dir, "templates/metaproject/")
+
+    src = ""
+    if args.meta:
+        src = join(root_dir, "templates", "metaproject/")
+    else:
+        src = join(root_dir, "templates", "project/")
     shutil.copytree(src, args.path)
 
     # Rename metaproject in README.md.
@@ -65,7 +70,7 @@ def initialize(args):
     print BLUE + "  git init %s" % args.path
     print BLUE + "  cd %s" % args.path
     print BLUE + "  git add ."
-    print BLUE + "  git commit -m \"Initialize metaproject.\""
+    print BLUE + "  git commit -m \"Initialize project.\""
 
     repo = Repo.init(args.path)
     repo.git.add(all=True)
@@ -117,17 +122,17 @@ def main():
     """Main entry point for projector."""
 
     # Parse args.
-    parser = argparse.ArgumentParser(description="A convenience tool for creating projectors.")
+    parser = argparse.ArgumentParser(description="A convenience tool for creating projects.")
     subparsers = parser.add_subparsers(help='Sub-command help')
 
     # Parser for init command.
     init_parser = subparsers.add_parser('init', help='Initialize a project')
-    init_parser.add_argument('path', help='Path to metaproject.')
+    init_parser.add_argument('-m', '--meta', action='store_true', help='Make this project a metaproject.')
+    init_parser.add_argument('path', help='Path to project.')
     init_parser.set_defaults(func=initialize)
 
     # Parser for add command.
-    add_parser = subparsers.add_parser('add', help='Add a project to the metaproject as a git ' +
-                                       'submodule.')
+    add_parser = subparsers.add_parser('add', help='Add a git submodule to a project.')
     add_parser.add_argument('url', help='Git repository url')
     add_parser.add_argument('-d', '--depends', nargs='*', help='Project dependencies.')
     add_parser.set_defaults(func=add_submodule)
