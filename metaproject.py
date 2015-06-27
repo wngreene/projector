@@ -79,16 +79,38 @@ def add_submodule(args):
     working_dir = os.getcwd()
     repo = Repo(working_dir)
     relpath = os.path.relpath(repo.working_dir, working_dir)
-
-    print GREEN + "Adding submodule:"
-    print BLUE + "  git submodule add %s %s" % (args.url, relpath)
-
     sm_name = re.split('[\./]', args.url)[-2]
 
-    sm = repo.create_submodule(sm_name, os.path.join(relpath, sm_name),
+    # Add submodule.
+    print GREEN + "Adding submodule:"
+    print BLUE + "  git submodule add %s %s" % (args.url, os.path.join(relpath, sm_name))
+
+    sm = repo.create_submodule(sm_name, os.path.join(sm_name),
                                url=args.url, branch="master")
 
-    print args.depends
+    # Make add_submodule call in CMakeLists.
+    with open(os.path.join(repo.working_dir, "CMakeLists.txt"), 'a') as cml:
+        cmd = "add_submodule(%s DIRECTORY ./%s" % (sm_name, sm_name)
+
+        if args.depends is not None:
+            cmd += " DEPENDS"
+            for dep in args.depends:
+                cmd += " %s" % dep
+
+        cmd += ")"
+
+        print BLUE + "  echo \"%s\" >> %s/CMakeLists.txt" % (cmd, relpath)
+        cml.write(cmd)
+
+    # Stage change.
+    repo.index.add(["CMakeLists.txt"])
+
+    # Commit changes.
+    # TODO(wng): Should this be automatically commited?
+    # Leaving commented out for now.
+    # print BLUE + "  git commit -m \"Added submodule %s\"" % sm_name
+    # repo.index.commit("Added submodule %s." % sm_name)
+
     return
 
 def main():
