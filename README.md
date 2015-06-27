@@ -7,6 +7,7 @@ A convenience tool for creating projects and metaprojects.
 ### Dependencies
 - python
 - git
+- gitpython
 
 ### Installation
 ```
