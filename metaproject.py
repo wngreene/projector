@@ -31,7 +31,7 @@ def initialize(args):
     print GREEN + "Metaproject destination:"
     print BLUE + "  %s" % args.path
     root_dir = os.path.dirname(os.path.realpath(__file__))
-    src = join(root_dir, "share/metaproject_template/")
+    src = join(root_dir, "template/")
     shutil.copytree(src, args.path)
 
     # Rename metaproject in README.md.
