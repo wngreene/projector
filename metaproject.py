@@ -85,7 +85,7 @@ def add_submodule(args):
     print GREEN + "Adding submodule:"
     print BLUE + "  git submodule add %s %s" % (args.url, os.path.join(relpath, sm_name))
 
-    sm = repo.create_submodule(sm_name, os.path.join(sm_name),
+    submod = repo.create_submodule(sm_name, os.path.join(sm_name),
                                url=args.url, branch="master")
 
     # Make add_submodule call in CMakeLists.
