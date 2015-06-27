@@ -25,5 +25,5 @@ projector init my_project
 projector init -m my_meta_project
 
 # Add a submodule to a project.
-projector add <git_url> -d <dependencies>
+projector add <git_url> <path> -d <dependencies>
 ```
