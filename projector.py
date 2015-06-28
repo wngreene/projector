@@ -40,6 +40,16 @@ def replace_string(fname, old, new):
 
     return
 
+def underscores_to_camel_case(under_scores):
+    """Convert under_scores to CamelCase."""
+    ssplit = under_scores.split("_")
+    caps = [ss.capitalize() for ss in ssplit]
+    camel_case = ""
+    for c in caps:
+        camel_case += c
+
+    return camel_case
+
 def replace_string_dir(dirname, old, new):
     """Replace a string in all files in a directory."""
     for dname, dirs, files in os.walk(dirname):
@@ -82,6 +92,13 @@ def initialize(args):
         src_split = os.path.split(args.path)
         name = src_split[-1]
         replace_string_dir(args.path, "module_example", name)
+
+        # Replace "MODULE_EXAMPLE"
+        replace_string_dir(args.path, "MODULE_EXAMPLE", name.upper())
+
+        # Replace "ModuleExample"
+        camel_case_str = underscores_to_camel_case(name)
+        replace_string_dir(args.path, "ModuleExample", camel_case_str)
 
         # Rename some files.
         os.rename(join(args.path, "src", "module_example", "module_example.h"),
