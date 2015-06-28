@@ -56,35 +56,42 @@ def initialize(args):
 
     join = os.path.join
 
-    print GREEN + "Project destination:"
-    print BLUE + "  %s" % args.path
-    root_dir = os.path.dirname(os.path.realpath(__file__))
+    src_split = os.path.split(args.path)
+    name = src_split[-1]
 
-    src = ""
+    print BLUE + "Cloning template:"
     if args.meta:
         # Clone project_example and checkout template branch.
+        print ENDC + "  git clone %s %s" % (PROJECT_EXAMPLE_URL, args.path)
+        print ENDC + "  git checkout %s" % (PROJECT_EXAMPLE_BRANCH)
         repo = Repo.clone_from(PROJECT_EXAMPLE_URL, args.path)
         repo.git.checkout(PROJECT_EXAMPLE_BRANCH)
 
+        print BLUE + "Initializing repository:"
         # Remove .git folder.
+        print ENDC + "  rm -rf %s/.git" % args.path
         shutil.rmtree(join(args.path, ".git"))
 
-        # Rename metaproject in README.md.
-        src_split = os.path.split(args.path)
-        name = src_split[-1]
+        # Replace "project_example".
+        print ENDC + "  Replacing \"project_example\" with \"%s\"" % name
         replace_string_dir(args.path, "project_example", name)
 
     else:
         # Clone module_example and checkout template branch.
+        print ENDC + "  git clone %s %s" % (MODULE_EXAMPLE_URL, args.path)
+        print ENDC + "  git checkout %s" % (MODULE_EXAMPLE_BRANCH)
         repo = Repo.clone_from(MODULE_EXAMPLE_URL, args.path)
         repo.git.checkout(MODULE_EXAMPLE_BRANCH)
 
+        print BLUE + "Initializing repository:"
+
         # Remove .git folder.
+        print ENDC + "  rm -rf %s/.git" % args.path
         shutil.rmtree(join(args.path, ".git"))
 
+        print ENDC + "  Replacing \"module_example\" with \"%s\"" % name
+
         # Replace "module_example".
-        src_split = os.path.split(args.path)
-        name = src_split[-1]
         replace_string_dir(args.path, "module_example", name)
 
         # Replace "MODULE_EXAMPLE"
@@ -113,11 +120,10 @@ def initialize(args):
                   join(args.path, "cmake", "templates", "%sConfigVersion.cmake.in" % name))
 
     # Initialize repo.
-    print GREEN + "Initializing repository:"
-    print BLUE + "  git init %s" % args.path
-    print BLUE + "  cd %s" % args.path
-    print BLUE + "  git add ."
-    print BLUE + "  git commit -m \"Initialize project.\""
+    print ENDC + "  git init %s" % args.path
+    print ENDC + "  cd %s" % args.path
+    print ENDC + "  git add ."
+    print ENDC + "  git commit -m \"Initialize project.\""
 
     repo = Repo.init(args.path)
     repo.git.add(all=True)
@@ -133,8 +139,8 @@ def add_submodule(args):
     sm_name = re.split('[\./]', args.url)[-2]
 
     # Add submodule.
-    print GREEN + "Adding submodule:"
-    print BLUE + "  git submodule add %s %s/" % (args.url, relpath)
+    print BLUE + "Adding submodule:"
+    print ENDC + "  git submodule add %s %s/" % (args.url, relpath)
 
     submod = repo.create_submodule(sm_name, os.path.join(repo.working_dir, relpath, sm_name),
                                    url=args.url, branch="master")
@@ -150,7 +156,7 @@ def add_submodule(args):
 
         cmd += ")"
 
-        print BLUE + "  echo \"%s\" >> %s/CMakeLists.txt" % (cmd, relpath)
+        print ENDC + "  echo \"%s\" >> %s/CMakeLists.txt" % (cmd, relpath)
         cml.write(cmd)
 
     # Stage change.
@@ -159,7 +165,7 @@ def add_submodule(args):
     # Commit changes.
     # TODO(wng): Should this be automatically commited?
     # Leaving commented out for now.
-    # print BLUE + "  git commit -m \"Added submodule %s\"" % sm_name
+    # print ENDC + "  git commit -m \"Added submodule %s\"" % sm_name
     # repo.index.commit("Added submodule %s." % sm_name)
 
     return
