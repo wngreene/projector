@@ -27,6 +27,9 @@ ENDC = '\033[0m'
 MODULE_EXAMPLE_URL = "git@github.mit.edu:rrg/module_example.git"
 MODULE_EXAMPLE_BRANCH = "feature_template"
 
+PROJECT_EXAMPLE_URL = "git@github.mit.edu:rrg/project_example.git"
+PROJECT_EXAMPLE_BRANCH = "feature_template"
+
 def replace_string(fname, old, new):
     """Replace a string in a file."""
     contents = ""
@@ -72,13 +75,17 @@ def initialize(args):
 
     src = ""
     if args.meta:
-        src = join(root_dir, "..", "templates", "metaproject/")
-        shutil.copytree(src, args.path)
+        # Clone project_example and checkout template branch.
+        repo = Repo.clone_from(PROJECT_EXAMPLE_URL, args.path)
+        repo.git.checkout(PROJECT_EXAMPLE_BRANCH)
+
+        # Remove .git folder.
+        shutil.rmtree(join(args.path, ".git"))
 
         # Rename metaproject in README.md.
         src_split = os.path.split(args.path)
         name = src_split[-1]
-        replace_string(join(args.path, "README.md"), "metaproject", name)
+        replace_string_dir(args.path, "project_example", name)
 
     else:
         # Clone module_example and checkout template branch.
@@ -117,20 +124,6 @@ def initialize(args):
                   join(args.path, "cmake", "templates", "%sConfig.cmake.in" % name))
         os.rename(join(args.path, "cmake", "templates", "module_exampleConfigVersion.cmake.in"),
                   join(args.path, "cmake", "templates", "%sConfigVersion.cmake.in" % name))
-
-    # Add a gitignore.
-    with open(join(args.path, ".gitignore"), "w") as gitignore:
-        ignores = []
-        ignores.append("build\n")
-        ignores.append("install\n")
-        ignores.append("*~\n")
-        ignores.append("*pyc\n")
-
-        gitignore.writelines(ignores)
-
-    # Add a gitmodules.
-    # with open(join(args.path, ".gitmodules"), "w") as gitmodules:
-    #     pass
 
     # Initialize repo.
     print GREEN + "Initializing repository:"
