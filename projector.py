@@ -24,6 +24,8 @@ WARNING = '\033[93m'
 FAIL = '\033[91m'
 ENDC = '\033[0m'
 
+MODULE_EXAMPLE_URL = "git@github.mit.edu:rrg/module_example.git"
+MODULE_EXAMPLE_BRANCH = "feature_template"
 
 def replace_string(fname, old, new):
     """Replace a string in a file."""
@@ -58,8 +60,9 @@ def initialize(args):
         replace_string(os.path.join(args.path, "README.md"), "metaproject", name)
 
     else:
-        src = join(root_dir, "..", "templates", "project/")
-        shutil.copytree(src, args.path)
+        # Clone module_example and checkout template branch.
+        repo = Repo.clone_from(MODULE_EXAMPLE_URL, args.path)
+        repo.git.checkout(MODULE_EXAMPLE_BRANCH)
 
         # Replace "project".
         src_split = os.path.split(args.path)
