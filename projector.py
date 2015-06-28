@@ -30,19 +30,6 @@ MODULE_EXAMPLE_BRANCH = "feature_template"
 PROJECT_EXAMPLE_URL = "git@github.mit.edu:rrg/project_example.git"
 PROJECT_EXAMPLE_BRANCH = "feature_template"
 
-def replace_string(fname, old, new):
-    """Replace a string in a file."""
-    contents = ""
-    with open(fname, "r") as fo:
-        contents = fo.read()
-
-        contents = contents.replace(old, new)
-
-    with open(fname, "w") as fo:
-        fo.write(contents)
-
-    return
-
 def underscores_to_camel_case(under_scores):
     """Convert under_scores to CamelCase."""
     ssplit = under_scores.split("_")
