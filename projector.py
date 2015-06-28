@@ -40,6 +40,17 @@ def replace_string(fname, old, new):
 
     return
 
+def replace_string_dir(dirname, old, new):
+    """Replace a string in all files in a directory."""
+    for dname, dirs, files in os.walk(dirname):
+        for fname in files:
+            fpath = os.path.join(dname, fname)
+            with open(fpath) as f:
+                s = f.read()
+                s = s.replace(old, new)
+                with open(fpath, "w") as f:
+                    f.write(s)
+
 def initialize(args):
     """Initialize a project."""
 
@@ -57,30 +68,38 @@ def initialize(args):
         # Rename metaproject in README.md.
         src_split = os.path.split(args.path)
         name = src_split[-1]
-        replace_string(os.path.join(args.path, "README.md"), "metaproject", name)
+        replace_string(join(args.path, "README.md"), "metaproject", name)
 
     else:
         # Clone module_example and checkout template branch.
         repo = Repo.clone_from(MODULE_EXAMPLE_URL, args.path)
         repo.git.checkout(MODULE_EXAMPLE_BRANCH)
 
-        # Replace "project".
+        # Remove .git folder.
+        shutil.rmtree(join(args.path, ".git"))
+
+        # Replace "module_example".
         src_split = os.path.split(args.path)
         name = src_split[-1]
-        replace_string(os.path.join(args.path, "README.md"), "project", name)
-        replace_string(os.path.join(args.path, "CMakeLists.txt"), "project", name)
-        replace_string(os.path.join(args.path, "cmake/templates/projectConfig.cmake.in"),
-                       "project", name)
-        replace_string(os.path.join(args.path, "CMakeLists.txt"),
-                       "%s(%s)" % (name, name), "project(%s)" % name)
+        replace_string_dir(args.path, "module_example", name)
 
         # Rename some files.
-        # os.rename(os.path.join(args.path, "src", "project"),
-        #           os.path.join(args.path, "src", name))
-        os.rename(os.path.join(args.path, "cmake", "templates", "projectConfig.cmake.in"),
-                  os.path.join(args.path, "cmake", "templates", "%sConfig.cmake.in" % name))
-        os.rename(os.path.join(args.path, "cmake", "templates", "projectConfigVersion.cmake.in"),
-                  os.path.join(args.path, "cmake", "templates", "%sConfigVersion.cmake.in" % name))
+        os.rename(join(args.path, "src", "module_example", "module_example.h"),
+                  join(args.path, "src", "module_example", "%s.h" % name))
+        os.rename(join(args.path, "src", "module_example", "module_example.cc"),
+                  join(args.path, "src", "module_example", "%s.cc" % name))
+        os.rename(join(args.path, "src", "module_example_main.cc"),
+                  join(args.path, "src", "%s_main.cc" % name))
+        os.rename(join(args.path, "test", "module_example_test.cc"),
+                  join(args.path, "test", "%s_test.cc" % name))
+
+        # Rename some folders.
+        os.rename(join(args.path, "src", "module_example"),
+                  join(args.path, "src", name))
+        os.rename(join(args.path, "cmake", "templates", "module_exampleConfig.cmake.in"),
+                  join(args.path, "cmake", "templates", "%sConfig.cmake.in" % name))
+        os.rename(join(args.path, "cmake", "templates", "module_exampleConfigVersion.cmake.in"),
+                  join(args.path, "cmake", "templates", "%sConfigVersion.cmake.in" % name))
 
     # Add a gitignore.
     with open(join(args.path, ".gitignore"), "w") as gitignore:
@@ -93,8 +112,8 @@ def initialize(args):
         gitignore.writelines(ignores)
 
     # Add a gitmodules.
-    with open(join(args.path, ".gitmodules"), "w") as gitmodules:
-        pass
+    # with open(join(args.path, ".gitmodules"), "w") as gitmodules:
+    #     pass
 
     # Initialize repo.
     print GREEN + "Initializing repository:"
