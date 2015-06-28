@@ -8,7 +8,7 @@ A convenience tool for creating projects.
 Usage:
   >> projector.py init my_project
   >> projector.py init -n my_meta_project
-  >> projector add <git url> <path> -d <dependencies>
+  >> projector.py add <git url> <path> -d <dependencies>
 """
 
 import os
