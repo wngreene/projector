@@ -1,6 +1,11 @@
 # projector
 A convenience tool for creating projects and metaprojects.
 
+The `init` subcommand will create a template project for you using
+the RRG's agreed upon best practices.
+
+The `init -m` subcommand will do the same for metaprojects.
+
 ### Maintainer
 - W. Nicholas Greene (wng@csail.mit.edu)
 
