@@ -16,6 +16,9 @@ python ./setup.py install --prefix=${INSTALL_PATH}
 ```
 where `INSTALL_PATH` must be on your `PYTHONPATH`.
 
+The installation step (to a directory that lies on your `PYTHONPATH`)
+allows you to call `projector.py` from any directory.
+
 ### Usage
 ```
 # Initialize a project.
